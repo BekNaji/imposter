@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "title": "Bazm vaqti",
+    "description": "Maroqli hordiq, kulgi va biroz tartibsizlik...",
+    "imagePath": "assets/images/party.png",
+    "isLocked": false,
+    "words": ["Raqs", "Musiqa", "Tort", "Shar", "Konfeti", "O'yin-kulgi", "DJ", "Niqob", "Sovg'a", "Kokteyl"]
+  },
+  {
+    "id": "2",
+    "title": "Taomlar",
+    "description": "Lazzatli mavzular, lekin noto'g'ri gapirsangiz yutqazasiz!",
+    "imagePath": "assets/images/food.png",
+    "isLocked": false,
+    "words": ["Pizza", "Gamburger", "Sushi", "Makaron", "Kabob", "Muzqaymoq", "Salat", "Sho'rva", "Somsa", "Paxtakor"]
+  },
+  {
+    "id": "3",
+    "title": "Gollivud",
+    "description": "Filmlar, aktyorlar va unutilmas sahnalar...",
+    "imagePath": "assets/images/hollywood.png",
+    "isLocked": false,
+    "words": ["Aktyor", "Rejissyor", "Kamera", "Ssenariy", "Oskar", "Qizil yo'lakcha", "Dublyor", "Kinoteatr", "Treyler", "Montaj"]
+  },
+  {
+    "id": "4",
+    "title": "Sport",
+    "description": "Ter to'kishga tayyormisiz? Raqobat boshlanadi!",
+    "imagePath": "assets/images/sports.png",
+    "isLocked": false,
+    "words": ["Futbol", "Basketbol", "Tennis", "Voleybol", "Suzish", "Yugurish", "Hakam", "Stadion", "Medal", "Mashg'ulot"]
+  },
+  {
+    "id": "5",
+    "title": "Texnologiya",
+    "description": "Kelajak dunyosiga bir qadam tashlang.",
+    "imagePath": "assets/images/tech.png",
+    "isLocked": false,
+    "words": ["Kompyuter", "Internet", "Dasturiy ta'minot", "Robot", "Sun'iy intellekt", "Telefon", "Kodlash", "Klaviatura", "Ekran", "Batareya"]
+  }
+]
