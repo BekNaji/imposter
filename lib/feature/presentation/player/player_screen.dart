@@ -76,7 +76,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
               controller: _addController,
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
-                hintText: "Oyuncu adını gir",
+                hintText: "O'yinchi ismini kiriting",
                 hintStyle: TextStyle(color: Colors.white38),
                 border: InputBorder.none,
               ),
@@ -139,17 +139,17 @@ class _PlayersScreenState extends State<PlayersScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(width: 40),
           const Text(
             "O'yinchilar",
             style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.settings, color: Colors.white, size: 30),
-          ),
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(Icons.settings, color: Colors.white, size: 30),
+          // ),
         ],
       ),
     );

@@ -51,7 +51,7 @@ class CategoriesScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
@@ -61,10 +61,10 @@ class CategoriesScreen extends StatelessWidget {
             "Kategoriyalar",
             style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.info_outline, color: Colors.white, size: 30),
-          ),
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(Icons.info_outline, color: Colors.white, size: 30),
+          // ),
         ],
       ),
     );

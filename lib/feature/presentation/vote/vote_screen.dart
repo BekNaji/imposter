@@ -50,7 +50,7 @@ class _VotingScreenState extends State<VotingScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Expanded(child: Image.asset("assets/images/avatar-${(index % 3) + 1}.png", fit: BoxFit.contain)),
+                              Expanded(child: Image.asset("assets/images/avatar-${index + 1}.png", fit: BoxFit.contain)),
                               Text(widget.players[index].name.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
                               const SizedBox(height: 10),
                             ],
@@ -83,7 +83,7 @@ class _VotingScreenState extends State<VotingScreen> {
                   minimumSize: const Size(double.infinity, 65),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                 ),
-                child: const Text("OYLARI GÖNDER", style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w900)),
+                child: const Text("YUBORISH", style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w900)),
               ),
             ),
         ],

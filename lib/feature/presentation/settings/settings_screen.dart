@@ -39,19 +39,19 @@ class SettingsScreen extends StatelessWidget {
           ),
 
           // 2. Ipuçları (Switcher)
-          ValueListenableBuilder<bool>(
-            valueListenable: _controller.showHints,
-            builder: (context, isEnabled, _) {
-              return _buildSettingCard(
-                title: "Ayg'oqchilar uchun ishora so'z",
-                subtitle: "Ayg'oqchilarga maxfiy so'z bo'yicha ishora berilsinmi ?",
-                content: _buildSwitcher(
-                  isActive: isEnabled,
-                  onToggle: _controller.toggleHints,
-                ),
-              );
-            },
-          ),
+          // ValueListenableBuilder<bool>(
+          //   valueListenable: _controller.showHints,
+          //   builder: (context, isEnabled, _) {
+          //     return _buildSettingCard(
+          //       title: "Ayg'oqchilar uchun ishora so'z",
+          //       subtitle: "Ayg'oqchilarga maxfiy so'z bo'yicha ishora berilsinmi ?",
+          //       content: _buildSwitcher(
+          //         isActive: isEnabled,
+          //         onToggle: _controller.toggleHints,
+          //       ),
+          //     );
+          //   },
+          // ),
 
           // 3. Tur vaqti
           ValueListenableBuilder<Duration>(

@@ -21,6 +21,14 @@ class _RevealCardScreenState extends State<RevealCardScreen> {
   final SettingsController _settingsController = getIt<SettingsController>();
   final CategoryController _categoryController = getIt<CategoryController>();
 
+  final List<Color> _playerColors = [
+    const Color(0xFF4CAF50), // Yashil
+    const Color(0xFFE35622), // To'q sariq
+    const Color(0xFF4A90E2), // Moviy
+    const Color(0xFFF5A623), // Sariq
+    const Color(0xFF9C27B0), // Binafsha
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -76,22 +84,25 @@ class _RevealCardScreenState extends State<RevealCardScreen> {
     return GestureDetector(
       onVerticalDragUpdate: (d) => _controller.updateReveal(d.primaryDelta!, MediaQuery.of(context).size.height),
       onVerticalDragEnd: (d) => _controller.finalizeReveal(),
-      child: Transform.translate(
-        offset: Offset(0, -reveal * MediaQuery.of(context).size.height),
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: const Color(0xFF4CAF50),
-          child: ValueListenableBuilder(
-            valueListenable: _controller.currentIndex,
-            builder: (context, index, _) {
-              return SafeArea(
+      child: ValueListenableBuilder<int>(
+        valueListenable: _controller.currentIndex,
+        builder: (context, index, _) {
+          // Rangni index bo'yicha tanlaymiz, agar o'yinchilar ko'p bo'lsa ro'yxat takrorlanadi
+          final backgroundColor = _playerColors[index % _playerColors.length];
+
+          return Transform.translate(
+            offset: Offset(0, -reveal * MediaQuery.of(context).size.height),
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: backgroundColor, // RANG SHU YERDA O'ZGARADI
+              child: SafeArea(
                 child: Column(
                   children: [
                     const SizedBox(height: 50),
                     Row(
                       children: [
-                        SizedBox(width: 20),
+                        const SizedBox(width: 20),
                         IconButton(
                           onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 30),
@@ -103,29 +114,27 @@ class _RevealCardScreenState extends State<RevealCardScreen> {
                       style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.white),
                     ),
                     const Spacer(),
-                    Image.asset("assets/images/avatar-1.png", height: 350),
+                    // Rasm o'zgarishi (sizda allaqachon bor)
+                    Image.asset("assets/images/avatar-${index + 1}.png", height: 350),
                     const Spacer(),
-                    ValueListenableBuilder(
+                    ValueListenableBuilder<bool>(
                       valueListenable: _controller.hasSeenSecret,
-                      builder: (context,seen,_) {
-                        if (seen) {
-                          return  const SizedBox(height: 30);
-                        }
-                        return Column(
+                      builder: (context, seen, _) {
+                        if (seen) return const SizedBox(height: 30);
+                        return const Column(
                           children: [
                             ScrollingHint(),
-                            const SizedBox(height: 30),
+                            SizedBox(height: 30),
                           ],
                         );
-                      }
+                      },
                     ),
-
                   ],
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

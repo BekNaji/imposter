@@ -15,7 +15,7 @@ class ResultScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text("Sonuçlar", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text("Natijalar", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
             const Spacer(),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -26,7 +26,7 @@ class ResultScreen extends StatelessWidget {
                   Text(isImposterFound ? "O'yinchilar\ng'alaba qozondi!" : "Ayg'oqchi\ng'alaba qozondi!",
                       textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                   const SizedBox(height: 10),
-                  Text(isImposterFound ? "Impostor yakalandı" : "Impostor qochib ketdi", style: const TextStyle(color: Colors.white54, fontSize: 16)),
+                  Text(isImposterFound ? "Ayg'oqchi topildi" : "Ayg'oqchi qochib ketdi", style: const TextStyle(color: Colors.white54, fontSize: 16)),
                   const SizedBox(height: 30),
                   // Tanlangan o'yinchi rasmi
                   ClipRRect(
@@ -39,7 +39,7 @@ class ResultScreen extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            _buildInfoCard("Gizli kelime", player.secretWord),
+            _buildInfoCard("Maxfiy so'z", player.secretWord),
             const Spacer(),
             _buildActionButtons(context),
             const SizedBox(height: 20),
@@ -74,7 +74,7 @@ class ResultScreen extends StatelessWidget {
           minimumSize: const Size(double.infinity, 65),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
         ),
-        child: const Text("TEKRAR OYNA ↻", style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w900)),
+        child: const Text("QAYTA O'YNASH ↻", style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w900)),
       ),
     );
   }

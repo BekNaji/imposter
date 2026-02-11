@@ -1,8 +1,8 @@
 import 'dart:math' as Math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:imposter/core/config.dart';
 import 'package:imposter/feature/presentation/game_play/game_play_controller.dart';
-import 'package:imposter/feature/presentation/player/player_controller.dart';
 import 'package:imposter/feature/presentation/reveal_card/reveal_card_controller.dart';
 import 'package:imposter/feature/presentation/vote/vote_screen.dart';
 
@@ -14,7 +14,6 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProviderStateMixin {
-  // Controllerlarni getIt orqali olamiz
   late final GamePlayController _controller = getIt<GamePlayController>();
   late final RevealCardController _revealController = getIt<RevealCardController>();
   late AnimationController _waveController;
@@ -22,16 +21,92 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    // To'lqinning doimiy harakati uchun controller
     _waveController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
+
+    // Vaqt tugashini kuzatish uchun listener qo'shamiz
+    _controller.remainingTime.addListener(_timeListener);
+  }
+
+  // Vaqtni tekshirib turuvchi funksiya
+  void _timeListener() {
+    if (_controller.remainingTime.value.inSeconds == 0) {
+      // Listenerni o'chiramiz (alert bir marta chiqishi uchun)
+      _controller.remainingTime.removeListener(_timeListener);
+      _showTimeUpDialog();
+    }
+  }
+
+  // Vaqt tugaganda chiqadigan chiroyli Alert
+  void _showTimeUpDialog() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: "TimeUp",
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, anim1, anim2) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return Transform.scale(
+          scale: anim1.value,
+          child: Opacity(
+            opacity: anim1.value,
+            child: AlertDialog(
+              backgroundColor: const Color(0xFF1A1723),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.alarm_on, color: Colors.white, size: 80),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "VAQT TUGADI!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    "Munozara tugadi. Endi ayg'oqchini fosh qilish vaqti keldi!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Alertni yopish
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VotingScreen(players: _revealController.players),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    ),
+                    child: const Text(
+                      "OVOZ BERISH",
+                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
-    // Controllerlarni tozalash (Memory leak oldini olish)
+    // Memory leak bo'lmasligi uchun listener va controllerlarni tozalaymiz
+    _controller.remainingTime.removeListener(_timeListener);
     _waveController.dispose();
     super.dispose();
   }
@@ -39,10 +114,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE94444), // Pastki qizil fon
+      backgroundColor: const Color(0xFFE94444),
       body: Stack(
         children: [
-          // 1. Animatsiyali To'lqinli Fon (Qora qism)
+          // 1. Animatsiyali To'lqinli Fon
           AnimatedBuilder(
             animation: _waveController,
             builder: (context, child) {
@@ -52,12 +127,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
                   return ClipPath(
                     clipper: AnimatedWaveClipper(_waveController.value * 2 * Math.pi),
                     child: Container(
-                      // Vaqtga qarab balandlik silliq o'zgaradi
                       height: MediaQuery.of(context).size.height * _controller.progress,
                       width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF1A1723), // To'q qora fon
-                      ),
+                      color: const Color(0xFF1A1723),
                     ),
                   );
                 },
@@ -73,14 +145,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
                 const Spacer(),
                 const Text(
                   "Vaqt",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: 2),
                 ),
-                // Katta Taymer
                 ValueListenableBuilder<Duration>(
                   valueListenable: _controller.remainingTime,
                   builder: (context, time, _) {
@@ -90,13 +156,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
                         color: Colors.white,
                         fontSize: 100,
                         fontWeight: FontWeight.w900,
-                        fontFeatures: [FontFeature.tabularFigures()], // Raqamlar qimirlamasligi uchun
+                        fontFeatures: [FontFeature.tabularFigures()],
                       ),
                     );
                   },
                 ),
                 const Spacer(),
-                // Dinamik Tugmalar
                 _buildDynamicButtons(),
                 const SizedBox(height: 30),
               ],
@@ -107,44 +172,32 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
     );
   }
 
-  // Yuqori qism (Back va Info)
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 28),
-          ),
-          IconButton(
-            onPressed: () {
-              // O'yin qoidalari haqida ma'lumot
-            },
-            icon: const Icon(Icons.info_outline, color: Colors.white, size: 32),
           ),
         ],
       ),
     );
   }
 
-  // Pauza holatiga qarab o'zgaruvchi tugmalar
   Widget _buildDynamicButtons() {
     return ValueListenableBuilder<bool>(
-        valueListenable: _controller.isPaused,
-        builder: (context, paused, _) {
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300), // Tugmalar almashinuvi uchun animatsiya
-            child: paused
-                ? _buildPausedStateButtons()
-                : _buildActiveStateButton(),
-          );
-        }
+      valueListenable: _controller.isPaused,
+      builder: (context, paused, _) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: paused ? _buildPausedStateButtons() : _buildActiveStateButton(),
+        );
+      },
     );
   }
 
-  // Faol holatdagi tugma (To'xtatish)
   Widget _buildActiveStateButton() {
     return Padding(
       key: const ValueKey(1),
@@ -157,7 +210,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
     );
   }
 
-  // To'xtatilgan holatdagi tugmalar (Ovoz berish va Davom etish)
   Widget _buildPausedStateButtons() {
     return Padding(
       key: const ValueKey(2),
@@ -176,7 +228,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
             child: _customButton(
               text: "Ovoz berish",
               onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) => VotingScreen(players: _revealController.players)));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => VotingScreen(players: _revealController.players)),
+                );
               },
               color: Colors.white.withOpacity(0.85),
             ),
@@ -194,23 +249,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(35),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Center(
-          child: Text(
-            text,
-            style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                color: Colors.black
-            ),
-          ),
+          child: Text(text, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black)),
         ),
       ),
     );
@@ -223,29 +265,23 @@ class _GamePlayScreenState extends State<GamePlayScreen> with SingleTickerProvid
   }
 }
 
-// To'lqinni chizuvchi Clipper
 class AnimatedWaveClipper extends CustomClipper<Path> {
   final double wavePhase;
-
   AnimatedWaveClipper(this.wavePhase);
 
   @override
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0, size.height - 25);
-
     for (double x = 0; x <= size.width; x++) {
-      // Sinusoida orqali to'lqin yasash
       double y = Math.sin((x / size.width * 2 * Math.pi) + wavePhase) * 15;
       path.lineTo(x, size.height - 35 + y);
     }
-
     path.lineTo(size.width, 0);
     path.close();
     return path;
   }
 
   @override
-  bool shouldReclip(AnimatedWaveClipper oldClipper) =>
-      oldClipper.wavePhase != wavePhase;
+  bool shouldReclip(AnimatedWaveClipper oldClipper) => oldClipper.wavePhase != wavePhase;
 }
